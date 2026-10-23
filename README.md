@@ -1,12 +1,12 @@
 # Edge Platform & Automation Architecture
 
-> **Platform Solution Architecture Blueprint: Edge Computing, Distributed Event Mesh & Local AI Pipeline**
+> Platform Solution Architecture Blueprint: Edge Computing, Distributed Event Mesh & Local AI Pipeline
 
 This repository contains the architecture diagrams, automation state models, and design documentation for a distributed edge platform running across microcontrollers, single-board orchestrators (Raspberry Pi), and localized x86 compute.
 
 ---
 
-## 🏗️ 1. Global Platform Architecture (C4 Container View)
+## 1. Global Platform Architecture (C4 Container View)
 
 ```mermaid
 flowchart TB
@@ -84,9 +84,9 @@ flowchart TB
 
 ---
 
-## ⚙️ 2. Automation Engine & Event Mesh
+## 2. Automation Engine & Event Mesh
 
-This diagram shows how physical and temporal triggers pass through the policy engine to execute multi-channel actions (audio announcements, notifications, energy conservation).
+This diagram illustrates how physical, temporal, and user-initiated state changes are ingested, evaluated by policy constraints, and dispatched across actuation endpoints.
 
 ```mermaid
 flowchart LR
@@ -94,7 +94,7 @@ flowchart LR
         T1["Presence: Geo-fence / Network Probe"]
         T2["Environmental: Window Contact Open"]
         T3["Appliance: Power Draw (Dishwasher)"]
-        T4["Temporal / Solar: Prayer Calculations"]
+        T4["Temporal / Solar: Schedule Calculations"]
         T5["Voice Intent: ESP32 Wake-word Event"]
     end
 
@@ -110,7 +110,7 @@ flowchart LR
         A_Presence["Welcome / Departure Orchestration"]
         A_HVAC["HVAC Energy Optimization Loop"]
         A_Reminder["Incomplete Household Task Alert"]
-        A_Prayer["Prayer Timing Sync & Azan"]
+        A_Schedule["Calendar & Schedule Sync"]
         A_AI["Real-time Intent Parsing"]
     end
 
@@ -128,20 +128,20 @@ flowchart LR
     Conditions -- "User enters zone" --> A_Presence
     Conditions -- "Window open > 3m" --> A_HVAC
     Conditions -- "Night & cycle not started" --> A_Reminder
-    Conditions -- "Solar angle match" --> A_Prayer
+    Conditions -- "Schedule match" --> A_Schedule
     Conditions -- "Audio payload received" --> A_AI
 
     %% Connect Dispatch to Execution
     A_Presence --> Act_TTS & Act_Lights
     A_HVAC --> Act_HVAC & Act_Ntfy
     A_Reminder --> Act_Ntfy
-    A_Prayer --> Act_TTS
+    A_Schedule --> Act_TTS
     A_AI --> Act_TTS
 ```
 
 ---
 
-## 🎙️ 3. Sub-Second Streaming Voice AI Pipeline (Sequence Diagram)
+## 3. Sub-Second Streaming Voice AI Pipeline (Sequence Diagram)
 
 ```mermaid
 sequenceDiagram
@@ -153,7 +153,7 @@ sequenceDiagram
     participant TTS as Kokoro TTS Streaming Proxy
     participant Speaker as Google Nest Audio
 
-    User->>Mic: Speak query ("Hey Google, what's next on schedule?")
+    User->>Mic: Speak query ("Hey Assistant, what's next on schedule?")
     Mic->>Gateway: Raw Audio Stream (UDP/TCP)
     Gateway->>LLM: Prompt Context + Token Generation Request
     LLM-->>Gateway: Streaming tokens (AVX-512 accelerated)
@@ -167,12 +167,12 @@ sequenceDiagram
 
 ---
 
-## 📊 4. Architectural Decision Records (ADRs)
+## 4. Architectural Decision Records (ADRs)
 
 | Architectural Decision | Chosen Strategy | Technical Rationale |
 | :--- | :--- | :--- |
-| **Workload Placement** | Tiered (Microcontrollers $\rightarrow$ SBC $\rightarrow$ x86) | Isolate real-time I/O from heavy compute; prevents LLM loads from locking Home Assistant. |
-| **Model Serving** | In-Memory Locked Ollama (`qwen2.5:1.5b`) | Eliminates cold-start disk latency; satisfies strict sub-1.5s voice turnaround budget. |
-| **TTS Latency Budget** | Sentence-by-sentence streaming proxy | Avoids waiting for entire paragraph synthesis before streaming audio to Cast endpoints. |
-| **Zero-Trust Ingress** | Synology DSM Proxy + Cloudflare Access | Exposes no management consoles (routers, status monitors) to public internet without ACLs. |
-| **Event Messaging** | MQTT + Decoupled Ntfy | Asynchronous pub/sub decouples sensors from actuators, preventing cascade failures. |
+| **Workload Partitioning** | Tiered (Microcontrollers $\rightarrow$ SBC $\rightarrow$ x86) | Isolate low-jitter real-time I/O from heavy compute; prevents LLM inference workloads from locking Home Assistant core events. |
+| **Local Model Serving** | In-Memory Locked Ollama (`qwen2.5:1.5b`) | Eliminates cold-start disk swapping latency; satisfies sub-1.5s voice turnaround budget. |
+| **Audio Latency Budget** | Sentence-chunked MP3 HTTP streaming proxy | Eliminates the need to wait for complete paragraph synthesis before beginning audio playback on target endpoints. |
+| **Zero-Trust Ingress** | Synology DSM Proxy + Cloudflare Access | Restricts internal management consoles and status metrics behind authenticated proxy layers with strict subnet ACLs. |
+| **Event Messaging** | MQTT + Decoupled Ntfy | Asynchronous publish-subscribe model decouples producers from consumers, eliminating cascading network failures. |

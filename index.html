@@ -144,7 +144,7 @@
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">1. Global Platform Architecture (C4 Container View)</h2>
-        <button class="btn" onclick="copyMermaid('d1')">📋 Copy Mermaid Code</button>
+        <button class="btn" onclick="copyMermaid('d1')">Copy Mermaid Code</button>
       </div>
       <p style="color: var(--text-muted);">Decoupled multi-tier edge platform connecting sensor microcontrollers to an ARM event core and x86 edge AI compute.</p>
       <div class="mermaid" id="d1">
@@ -221,7 +221,7 @@ flowchart TB
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">2. Automation Engine & Event Mesh</h2>
-        <button class="btn" onclick="copyMermaid('d2')">📋 Copy Mermaid Code</button>
+        <button class="btn" onclick="copyMermaid('d2')">Copy Mermaid Code</button>
       </div>
       <p style="color: var(--text-muted);">How asynchronous state changes (Presence, Sensor thresholds, Cron, Voice) propagate through the policy engine to dispatch actions.</p>
       <div class="mermaid" id="d2">
@@ -230,7 +230,7 @@ flowchart LR
         T1["Presence: Geo-fence / Network Probe"]
         T2["Environmental: Window Contact Open"]
         T3["Appliance: Power Draw (Dishwasher)"]
-        T4["Temporal / Solar: Prayer Calculations"]
+        T4["Temporal / Solar: Schedule Calculations"]
         T5["Voice Intent: ESP32 Wake-word Event"]
     end
 
@@ -246,7 +246,7 @@ flowchart LR
         A_Presence["Welcome / Departure Orchestration"]
         A_HVAC["HVAC Energy Optimization Loop"]
         A_Reminder["Incomplete Household Task Alert"]
-        A_Prayer["Prayer Timing Sync & Azan"]
+        A_Schedule["Calendar & Schedule Sync"]
         A_AI["Real-time Intent Parsing"]
     end
 
@@ -262,13 +262,13 @@ flowchart LR
     Conditions -- "User enters zone" --> A_Presence
     Conditions -- "Window open > 3m" --> A_HVAC
     Conditions -- "Night & cycle not started" --> A_Reminder
-    Conditions -- "Solar angle match" --> A_Prayer
+    Conditions -- "Schedule match" --> A_Schedule
     Conditions -- "Audio payload received" --> A_AI
 
     A_Presence --> Act_TTS & Act_Lights
     A_HVAC --> Act_HVAC & Act_Ntfy
     A_Reminder --> Act_Ntfy
-    A_Prayer --> Act_TTS
+    A_Schedule --> Act_TTS
     A_AI --> Act_TTS
       </div>
     </div>
@@ -277,7 +277,7 @@ flowchart LR
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">3. Sub-Second Streaming Voice AI Pipeline</h2>
-        <button class="btn" onclick="copyMermaid('d3')">📋 Copy Mermaid Code</button>
+        <button class="btn" onclick="copyMermaid('d3')">Copy Mermaid Code</button>
       </div>
       <p style="color: var(--text-muted);">Real-time pipelined streaming sequence achieving sub-1.2s first audio packet turnaround on edge hardware.</p>
       <div class="mermaid" id="d3">
@@ -290,7 +290,7 @@ sequenceDiagram
     participant TTS as Kokoro TTS Streaming Proxy
     participant Speaker as Google Nest Audio
 
-    User->>Mic: Speak query ("Hey Google, what's next on schedule?")
+    User->>Mic: Speak query ("Hey Assistant, what's next on schedule?")
     Mic->>Gateway: Raw Audio Stream (UDP/TCP)
     Gateway->>LLM: Prompt Context + Token Generation Request
     LLM-->>Gateway: Streaming tokens (AVX-512 accelerated)
@@ -305,7 +305,7 @@ sequenceDiagram
 
     <!-- Architecture Decision Records -->
     <div class="card">
-      <h2 class="card-title" style="margin-bottom: 1rem;">Platform Architecture Decisions (ADR Summary)</h2>
+      <h2 class="card-title" style="margin-bottom: 1rem;">4. Platform Architecture Decisions (ADR Summary)</h2>
       <table>
         <thead>
           <tr>
@@ -351,13 +351,12 @@ sequenceDiagram
     function copyMermaid(id) {
       const code = document.getElementById(id).getAttribute('data-code') || document.getElementById(id).innerText;
       navigator.clipboard.writeText(code).then(() => {
-        alert('Mermaid code copied to clipboard! You can paste it into Mermaid Live Editor, Obsidian, or GitHub Markdown.');
+        alert('Mermaid code copied to clipboard.');
       }).catch(err => {
         console.error('Failed to copy: ', err);
       });
     }
 
-    // Cache original raw code
     document.addEventListener("DOMContentLoaded", () => {
       ['d1', 'd2', 'd3'].forEach(id => {
         const el = document.getElementById(id);
