@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edge Platform & Automation Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .badge-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: var(--border);
+      color: var(--text-muted);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .card-title {
+      font-size: 1.35rem;
+      color: var(--text);
+    }
+    .btn {
+      background-color: var(--border);
+      color: var(--text);
+      border: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover {
+      background-color: var(--accent);
+      color: #0f172a;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    th {
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Edge Platform & Automation Architecture</h1>
+      <p class="subtitle">Distributed Edge Topology, Event-Driven Automations & Low-Latency Voice AI Pipeline</p>
+      <div class="badge-bar">
+        <span class="badge">Architecture-as-Code</span>
+        <span class="badge">Edge Computing</span>
+        <span class="badge">Home Assistant</span>
+        <span class="badge">FastAPI & MCP</span>
+        <span class="badge">Local LLM (Qwen-2.5)</span>
+        <span class="badge">AVX-512 Optimized</span>
+      </div>
+    </header>
+
+    <!-- Diagram 1 -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">1. Global Platform Architecture (C4 Container View)</h2>
+        <button class="btn" onclick="copyMermaid('d1')">📋 Copy Mermaid Code</button>
+      </div>
+      <p style="color: var(--text-muted);">Decoupled multi-tier edge platform connecting sensor microcontrollers to an ARM event core and x86 edge AI compute.</p>
+      <div class="mermaid" id="d1">
+flowchart TB
+    subgraph WAN ["Cloud & Ingress Boundaries"]
+        Cloudflare["Cloudflare Zero Trust / Tunnel"]
+        AzureAI["Hybrid Fallback: Azure OpenAI"]
+        NtfyPush["Ntfy Push Notification Broker"]
+    end
+
+    subgraph EdgeSensors ["Layer 1: Sensor & Voice Satellites (Edge)"]
+        direction LR
+        AtomEcho["M5Stack Atom Echo (ESPHome)"]
+        ZigbeeNodes["Zigbee / Matter Sensor Mesh"]
+        SmartAppliances["Smart Appliances (Dishwasher, AC Units)"]
+        WLED["ESP8266 / WLED (Addressable LED Strips)"]
+    end
+
+    subgraph NodePi ["Layer 2: Event Mesh & Home Core (RPi Node)"]
+        direction TB
+        HA["Home Assistant Core (State Engine)"]
+        MQTT["Mosquitto MQTT Broker (:1883)"]
+        HyperHDR["HyperHDR Ambilight Daemon"]
+        PiDiag["Pi SRE Telemetry & Diagnostics"]
+    end
+
+    subgraph Nodex86 ["Layer 3: Local Compute & Edge AI (x86 Node)"]
+        direction TB
+        MCPGate["MCP Voice AI Gateway (FastAPI :8030)"]
+        OllamaLocal["Ollama: Qwen-2.5 1.5B (RAM-locked / AVX-512)"]
+        TTSProxy["Kokoro / Piper TTS Streaming Proxy"]
+        DockerApps["Docker Container Workloads (WebUI, Utilities)"]
+    end
+
+    subgraph StorageNet ["Layer 4: Ingress & Storage (Synology NAS)"]
+        direction LR
+        SynologyProxy["Synology DSM Reverse Proxy / ACL"]
+        NASStorage["Shared NFS/SMB Storage & Backups"]
+        AdGuard["AdGuard Home DNS"]
+    end
+
+    subgraph Actuators ["Actuator & Multimedia Endpoints"]
+        GoogleNest["Google Nest Audio Cluster"]
+        LGTV["Smart TV & LED Edge Matrix"]
+        ClimateHVAC["Smart Thermostats & AC Units"]
+    end
+
+    Cloudflare --> SynologyProxy
+    SynologyProxy --> HA
+    SynologyProxy --> DockerApps
+    AdGuard -. DNS Filtering .-> EdgeSensors & NodePi & Nodex86
+
+    AtomEcho -- "Microphone Stream (UDP/TCP)" --> MCPGate
+    ZigbeeNodes -- "Zigbee/Matter" --> HA
+    SmartAppliances -- "Status Telemetry" --> HA
+
+    HA <--> MQTT
+    MQTT --> HyperHDR
+    HyperHDR --> WLED
+
+    MCPGate <--> OllamaLocal
+    MCPGate -. Low-confidence query .-> AzureAI
+    MCPGate --> TTSProxy
+    TTSProxy -- "Chunked MP3 Stream (<1.2s TTFB)" --> GoogleNest
+
+    HA -- "TTS Broadcast" --> GoogleNest
+    HA -- "Push Alert" --> NtfyPush
+    HA -- "Relay Command" --> ClimateHVAC
+    HA -- "State Trigger" --> HyperHDR
+      </div>
+    </div>
+
+    <!-- Diagram 2 -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">2. Automation Engine & Event Mesh</h2>
+        <button class="btn" onclick="copyMermaid('d2')">📋 Copy Mermaid Code</button>
+      </div>
+      <p style="color: var(--text-muted);">How asynchronous state changes (Presence, Sensor thresholds, Cron, Voice) propagate through the policy engine to dispatch actions.</p>
+      <div class="mermaid" id="d2">
+flowchart LR
+    subgraph Ingestion ["1. Event Ingestion (Triggers)"]
+        T1["Presence: Geo-fence / Network Probe"]
+        T2["Environmental: Window Contact Open"]
+        T3["Appliance: Power Draw (Dishwasher)"]
+        T4["Temporal / Solar: Prayer Calculations"]
+        T5["Voice Intent: ESP32 Wake-word Event"]
+    end
+
+    subgraph Engine ["2. State Machine & Policy Engine"]
+        direction TB
+        Bus["Event Bus (State Change Evaluator)"]
+        Conditions{"Policy Engine (Thresholds & Mode Check)"}
+        
+        Bus --> Conditions
+    end
+
+    subgraph Dispatch ["3. Decision Matrix"]
+        A_Presence["Welcome / Departure Orchestration"]
+        A_HVAC["HVAC Energy Optimization Loop"]
+        A_Reminder["Incomplete Household Task Alert"]
+        A_Prayer["Prayer Timing Sync & Azan"]
+        A_AI["Real-time Intent Parsing"]
+    end
+
+    subgraph Execution ["4. Execution & Actuators"]
+        Act_TTS["Pipelined TTS to Multi-room Speakers"]
+        Act_HVAC["Shut down AC compressor"]
+        Act_Ntfy["Encrypted Ntfy Push Notification"]
+        Act_Lights["Ambilight / Scene Adjustment"]
+    end
+
+    T1 & T2 & T3 & T4 & T5 --> Bus
+
+    Conditions -- "User enters zone" --> A_Presence
+    Conditions -- "Window open > 3m" --> A_HVAC
+    Conditions -- "Night & cycle not started" --> A_Reminder
+    Conditions -- "Solar angle match" --> A_Prayer
+    Conditions -- "Audio payload received" --> A_AI
+
+    A_Presence --> Act_TTS & Act_Lights
+    A_HVAC --> Act_HVAC & Act_Ntfy
+    A_Reminder --> Act_Ntfy
+    A_Prayer --> Act_TTS
+    A_AI --> Act_TTS
+      </div>
+    </div>
+
+    <!-- Diagram 3 -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">3. Sub-Second Streaming Voice AI Pipeline</h2>
+        <button class="btn" onclick="copyMermaid('d3')">📋 Copy Mermaid Code</button>
+      </div>
+      <p style="color: var(--text-muted);">Real-time pipelined streaming sequence achieving sub-1.2s first audio packet turnaround on edge hardware.</p>
+      <div class="mermaid" id="d3">
+sequenceDiagram
+    autonumber
+    actor User
+    participant Mic as ESP32 (Atom Echo)
+    participant Gateway as MCP Voice Gateway (:8030)
+    participant LLM as Ollama Qwen-2.5 (RAM-locked)
+    participant TTS as Kokoro TTS Streaming Proxy
+    participant Speaker as Google Nest Audio
+
+    User->>Mic: Speak query ("Hey Google, what's next on schedule?")
+    Mic->>Gateway: Raw Audio Stream (UDP/TCP)
+    Gateway->>LLM: Prompt Context + Token Generation Request
+    LLM-->>Gateway: Streaming tokens (AVX-512 accelerated)
+    Gateway->>TTS: Sentence 1 ("You have a meeting in 15 minutes...")
+    Note over TTS: Synthesize chunk 1 in ~400ms
+    TTS-->>Speaker: HTTP Chunked MP3 Stream (First chunk plays in ~1.2s)
+    Gateway->>TTS: Sentence 2 ("...followed by the project review.")
+    TTS-->>Speaker: Seamlessly append chunk 2 to stream buffer
+    Speaker-->>User: Complete audible response with zero user-perceptible delay
+      </div>
+    </div>
+
+    <!-- Architecture Decision Records -->
+    <div class="card">
+      <h2 class="card-title" style="margin-bottom: 1rem;">Platform Architecture Decisions (ADR Summary)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Decision Area</th>
+            <th>Design Approach</th>
+            <th>Architectural Trade-off & Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Workload Partitioning</strong></td>
+            <td>Multi-tier (Microcontrollers &rarr; SBC &rarr; x86)</td>
+            <td>Isolate low-jitter real-time I/O from heavy CPU-intensive AI model inference.</td>
+          </tr>
+          <tr>
+            <td><strong>Local AI Model Serving</strong></td>
+            <td>RAM-locked Ollama Qwen-2.5 1.5B (AVX-512)</td>
+            <td>Eliminates swap and disk cold-start latency; satisfies strict real-time SLA.</td>
+          </tr>
+          <tr>
+            <td><strong>Audio Latency Budget</strong></td>
+            <td>Sentence-chunked MP3 HTTP streaming proxy</td>
+            <td>Cuts user perception latency from ~5s down to 1.2s without waiting for complete text synthesis.</td>
+          </tr>
+          <tr>
+            <td><strong>Security & Ingress</strong></td>
+            <td>Local ACL Reverse Proxy + Cloudflare Zero Trust</td>
+            <td>Exposes zero administrative or telemetry ports to public network without authentication.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+
+    function copyMermaid(id) {
+      const code = document.getElementById(id).getAttribute('data-code') || document.getElementById(id).innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Mermaid code copied to clipboard! You can paste it into Mermaid Live Editor, Obsidian, or GitHub Markdown.');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    }
+
+    // Cache original raw code
+    document.addEventListener("DOMContentLoaded", () => {
+      ['d1', 'd2', 'd3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('data-code', el.innerText.trim());
+      });
+    });
+  </script>
+</body>
+</html>
